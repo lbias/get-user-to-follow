@@ -70,3 +70,18 @@ def get_list_of_latest_posts_ids(usernames):
                 post_ids.append(posts[key]['id'])
 
     return post_ids
+
+# Returns the list of post responses of a list of posts that are no older than 1 month
+def get_post_responses(posts):
+    print('Retrieving the post responses...')
+
+    responses = []
+
+    for post in posts:
+        url = MEDIUM + '/_/api/posts/' + post + '/responses'
+        response = requests.get(url)
+        response_dict = clean_json_response(response)
+        responses += response_dict['payload']['value']
+        sleep(0.5) # This is the most intensive operation for the Medium servers, we'll help them out
+
+    return responses
