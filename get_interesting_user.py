@@ -118,3 +118,18 @@ def get_user_ids_from_responses(responses, recommend_min):
             user_ids.append(response['creatorId'])
 
     return user_ids
+
+
+# Returns the list of usernames of a list of User IDs
+def get_usernames(user_ids):
+    print('Retrieving usernames of interesting users...')
+
+    usernames = []
+
+    for user_id in user_ids:
+        url = MEDIUM + '/_/api/users/' + user_id
+        response = requests.get(url)
+        response_dict = clean_json_response(response)
+        usernames.append(response_dict['payload']['value']['username'])
+
+    return usernames
