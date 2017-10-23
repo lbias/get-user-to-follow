@@ -1,5 +1,7 @@
+from datetime import datetime, timedelta
 import json
 import requests
+
 
 MEDIUM = 'https://medium.com'
 
@@ -85,3 +87,19 @@ def get_post_responses(posts):
         sleep(0.5) # This is the most intensive operation for the Medium servers, we'll help them out
 
     return responses
+
+
+# Checks if a response was created in the last 30 days
+def check_if_recent(response):
+    limit_date = datetime.now() - timedelta(days=30)
+    creation_epoch_time = response['createdAt'] / 1000
+    creation_date = datetime.fromtimestamp(creation_epoch_time)
+
+    if creation_date >= limit_date:
+        return True
+
+
+# Checks if a response is over a certain number of recommends
+def check_if_high_recommends(response, recommend_min):
+    if response['virtuals']['recommends'] >= recommend_min:
+        return True
