@@ -103,3 +103,18 @@ def check_if_recent(response):
 def check_if_high_recommends(response, recommend_min):
     if response['virtuals']['recommends'] >= recommend_min:
         return True
+
+
+# Returns the list of User IDs of a list of responses that have over a certain number of recommends
+def get_user_ids_from_responses(responses, recommend_min):
+    print('Retrieving user IDs from the responses...')
+
+    user_ids = []
+
+    for response in responses:
+        recent = check_if_recent(response)
+        high_recommends = check_if_high_recommends(response, recommend_min)
+        if recent and high_recommends:
+            user_ids.append(response['creatorId'])
+
+    return user_ids
