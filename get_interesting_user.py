@@ -47,3 +47,26 @@ def get_list_of_followings(user_id):
         except:
             break
     return followings
+
+
+# Returns the list of IDs of the latest posts of a list of users
+def get_list_of_latest_posts_ids(usernames):
+    print('Retrieving the latest posts...')
+
+    post_ids = []
+
+    for username in usernames:
+        url = MEDIUM + '/@' + username + '/latest?format=json'
+        response = requests.get(url)
+        response_dict = clean_json_response(response)
+
+        try:
+            posts = response_dict['payload']['references']['Post']
+        except:
+            posts = []
+
+        if posts:
+            for key in posts.keys():
+                post_ids.append(posts[key]['id'])
+
+    return post_ids
