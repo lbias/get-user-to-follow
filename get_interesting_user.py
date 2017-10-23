@@ -1,6 +1,8 @@
+import csv
 from datetime import datetime, timedelta
 import json
 import requests
+from time import sleep
 
 
 MEDIUM = 'https://medium.com'
@@ -133,3 +135,13 @@ def get_usernames(user_ids):
         usernames.append(response_dict['payload']['value']['username'])
 
     return usernames
+
+# Adds list of interesting users to the interesting_users.csv and adds a timestamp
+def list_to_csv(interesting_users_list):
+    with open('interesting_users.csv', 'a') as file:
+        writer = csv.writer(file)
+
+        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        interesting_users_list.insert(0, now)
+
+        writer.writerow(interesting_users_list)
