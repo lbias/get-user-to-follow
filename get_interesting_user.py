@@ -1,9 +1,9 @@
+import click
 import csv
-from datetime import datetime, timedelta
 import json
 import requests
+from datetime import datetime, timedelta
 from time import sleep
-
 
 MEDIUM = 'https://medium.com'
 
@@ -145,3 +145,33 @@ def list_to_csv(interesting_users_list):
         interesting_users_list.insert(0, now)
 
         writer.writerow(interesting_users_list)
+
+
+# Returns a list of usernames in your network that might be interesting to interact with
+def get_interesting_users(username, recommend_min):
+
+    print('Looking for interesting users for %s...' % username)
+
+    user_id = get_user_id(username)
+
+    usernames = get_list_of_followings(user_id)
+
+    posts = get_list_of_latest_posts_ids(usernames)
+
+    responses = get_post_responses(posts)
+
+    users = get_user_ids_from_responses(responses, recommend_min)
+
+    return get_usernames(users)
+
+
+@click.command()
+@click.option('-n', '--name', default='Quincy Larson', help='Medium username')
+@click.option('-r', '--min-recommendations', default=10, help='Minimum number of recommendations per response')
+def main(name, min_recommendations):
+    interesting_users = get_interesting_users(name, min_recommendations)
+    print(interesting_users)
+    list_to_csv(interesting_users)
+
+if __name__ == '__main__':
+    main()
